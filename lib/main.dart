@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:romanceusdecor/pages/conversation_page.dart';
+import 'package:romanceusdecor/pages/create_job.dart';
 import 'package:romanceusdecor/pages/forgot_password.dart';
 import 'package:romanceusdecor/pages/home.dart';
 import 'package:romanceusdecor/pages/login_page.dart';
@@ -8,7 +10,9 @@ import 'package:romanceusdecor/pages/new_password.dart';
 import 'package:romanceusdecor/pages/signup_page.dart';
 import 'package:romanceusdecor/pages/splash.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -24,7 +28,8 @@ class MyApp extends StatelessWidget {
         '/forgotpassword': (context) => ForgotPassword(),
         '/newpassword': (context) => NewPassword(),
         '/home': (context) => HomePage(),
-        '/conversationPage': (context) => ConversationPage()
+        '/conversationPage': (context) => ConversationPage(),
+        '/createJob': (context) => CreateJob()
       },
       debugShowCheckedModeBanner: false,
       title: 'Romance US Decor',

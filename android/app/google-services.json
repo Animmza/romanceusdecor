@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "845720065279",
+    "project_id": "romanceusapp",
+    "storage_bucket": "romanceusapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845720065279:android:e839c57cfbba61f143e8ca",
+        "android_client_info": {
+          "package_name": "com.romance.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "845720065279-0a1bgvu6k5dlis6qai9qlsq0qn833260.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnGfE5jdBCtSeHZmmr6j6CudKhSsDZ2aw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "845720065279-0a1bgvu6k5dlis6qai9qlsq0qn833260.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

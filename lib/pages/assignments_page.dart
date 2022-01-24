@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:romanceusdecor/models/user.dart';
+import 'package:romanceusdecor/pages/create_job.dart';
 import 'package:romanceusdecor/widgets/job_widget.dart';
 
 class AssignmentsPage extends StatefulWidget {
-  const AssignmentsPage({Key? key}) : super(key: key);
+  final AppUser user;
+  const AssignmentsPage({Key? key, required this.user}) : super(key: key);
 
   @override
   _AssignmentsPageState createState() => _AssignmentsPageState();
 }
 
 class _AssignmentsPageState extends State<AssignmentsPage> {
-  List<String> titlesList = ['Available', 'In Progress', 'Completed'];
+  List<String>? titlesList;
   int focusedIndex = 0;
+  AppUser? _user;
+  @override
+  void initState() {
+    _user = widget.user;
+    _user!.role == 'admin'
+        ? titlesList = ['Pending', 'In Progress', 'Completed']
+        : titlesList = ['Available', 'In Progress', 'Completed'];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +32,25 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
         elevation: 0,
         leading: SizedBox(),
         title: Text('ASSIGNMENTS'),
+        actions: [
+          _user!.role == 'admin'
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 12),
+                  child: OutlinedButton(
+                    child: Text('+ Create'),
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return CreateJob();
+                      }));
+                    },
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                )
+              : SizedBox()
+        ],
       ),
       body: ScreenUtilInit(
         builder: () {
@@ -34,7 +65,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                   child: ListView.builder(
                     itemExtent: .3.sw,
                     scrollDirection: Axis.horizontal,
-                    itemCount: titlesList.length,
+                    itemCount: titlesList!.length,
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
@@ -50,7 +81,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                               ? Theme.of(context).primaryColor.withOpacity(.2)
                               : Colors.grey.shade200,
                           child: Text(
-                            titlesList.elementAt(index),
+                            titlesList!.elementAt(index),
                             style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 color: focusedIndex == index

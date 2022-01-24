@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cupertino_stepper/cupertino_stepper.dart';
 
 class AssignmentActivity extends StatefulWidget {
   const AssignmentActivity({Key? key}) : super(key: key);

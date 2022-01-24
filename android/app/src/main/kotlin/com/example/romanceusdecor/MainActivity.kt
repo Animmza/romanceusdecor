@@ -1,4 +1,4 @@
-package com.example.romanceusdecor
+package com.romance.app
 
 import io.flutter.embedding.android.FlutterActivity
 

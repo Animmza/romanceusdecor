@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:romanceusdecor/services/auth_services.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -8,10 +9,15 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  AuthServices _authServices = AuthServices();
   @override
   void initState() {
-    Future.delayed(const Duration(milliseconds: 1500)).then((value) {
-      Navigator.of(context).pushNamed('/loginpage');
+    Future.delayed(const Duration(milliseconds: 1500), () {}).then((value) {
+      if (_authServices.isLoggedIn()) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/loginpage');
+      }
     });
     super.initState();
   }
