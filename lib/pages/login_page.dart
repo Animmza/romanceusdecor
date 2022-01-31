@@ -12,6 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool loading = false;
   bool _hidePassword = true;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -204,35 +205,49 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _loginResponse = null;
-                          });
-                          if (_formKey.currentState!.validate()) {
-                            _authServices
-                                .login(
-                                    email: _emailController.text,
-                                    password: _passwordController.text)
-                                .then((value) {
-                              if (value == LoginResponse.LogInSuccessful) {
-                                Navigator.pushReplacementNamed(
-                                    context, '/home');
-                              } else {
+                        onPressed: loading
+                            ? null
+                            : () {
                                 setState(() {
-                                  _loginResponse = value;
+                                  _loginResponse = null;
                                 });
-                                _formKey.currentState!.validate();
-                              }
-                            });
-                          }
-                        },
-                        child: Text('Login'),
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  _authServices
+                                      .login(
+                                          email: _emailController.text,
+                                          password: _passwordController.text)
+                                      .then((value) {
+                                    if (value ==
+                                        LoginResponse.LogInSuccessful) {
+                                      Navigator.pushReplacementNamed(
+                                          context, '/home');
+                                    } else {
+                                      setState(() {
+                                        loading = false;
+                                        _loginResponse = value;
+                                      });
+                                      _formKey.currentState!.validate();
+                                    }
+                                  });
+                                }
+                              },
+                        child: loading
+                            ? CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Text('Login'),
                         style: ElevatedButton.styleFrom(
+                            onSurface: Theme.of(context).primaryColor,
                             primary: Theme.of(context).primaryColor,
                             textStyle: TextStyle(fontSize: 12.sp),
                             fixedSize: Size(1.sw, .07.sh),
                             elevation: 0,
-                            shape: BeveledRectangleBorder()),
+                            shape: loading
+                                ? CircleBorder()
+                                : BeveledRectangleBorder()),
                       ),
                     ),
                     Row(

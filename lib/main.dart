@@ -62,6 +62,9 @@ class MyApp extends StatelessWidget {
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           selectedLabelStyle: TextStyle(color: Colors.black),
         ),
+        timePickerTheme: TimePickerThemeData(
+          dialHandColor: themeColor,
+        ),
         appBarTheme: AppBarTheme(
           elevation: 0,
           titleTextStyle: GoogleFonts.lora(
@@ -78,7 +81,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const Splash(),
+      home: Splash(),
     );
   }
 }

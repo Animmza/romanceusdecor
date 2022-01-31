@@ -136,8 +136,8 @@ class AuthServices {
   }
 
   changeProfilePicture() {
-    // ignore: invalid_use_of_visible_for_testing_member
     try {
+      // ignore: invalid_use_of_visible_for_testing_member
       ImagePicker.platform.pickImage(source: ImageSource.gallery).then((value) {
         if (value != null)
           _storage
