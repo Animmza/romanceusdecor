@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:romanceusdecor/models/job.dart';
 import 'package:romanceusdecor/models/user.dart';
 import 'package:romanceusdecor/pages/create_job.dart';
 import 'package:romanceusdecor/widgets/job_widget.dart';
@@ -16,6 +18,7 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
   List<String>? titlesList;
   int focusedIndex = 0;
   AppUser? _user;
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   @override
   void initState() {
     _user = widget.user;
@@ -95,19 +98,25 @@ class _AssignmentsPageState extends State<AssignmentsPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: JobWidget(
-                  jobType: 'Priority',
-                  userType: 'admin',
-                  size: Size(
-                    1.sw,
-                    1.sh,
-                  ),
-                  title: 'BEDROOM SURPRISE',
-                  location: 'Brooklyn, New York',
-                  date: '25 Dec,2021',
-                  time: '4:00 pm',
-                ),
+                padding: EdgeInsets.all(10.0),
+                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: _firebaseFirestore.collection('jobs').snapshots(),
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            return JobWidget(
+                              userType: 'admin',
+                              size: Size(
+                                1.sw,
+                                1.sh,
+                              ),
+                              job: Job.fromJson(
+                                  snapshot.data!.docs[index].data()),
+                            );
+                          });
+                    }),
               )
             ],
           );

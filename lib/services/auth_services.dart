@@ -34,6 +34,11 @@ class AuthServices {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   FirebaseStorage _storage = FirebaseStorage.instance;
+  Future<AppUser> getUser(String id) async {
+    return AppUser.fromJson(
+        (await _firebaseFirestore.collection('users').doc(id).get()).data()!);
+  }
+
   Future<LoginResponse> login(
       {required String email, required String password}) async {
     try {

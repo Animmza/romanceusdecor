@@ -142,18 +142,18 @@ class _DashboardState extends State<Dashboard> {
                       ],
                     ),
                   ),
-                  JobWidget(
-                    jobType: 'Recommended',
-                    userType: 'user',
-                    size: Size(
-                      1.sw,
-                      1.sh,
-                    ),
-                    title: 'BEDROOM SURPRISE',
-                    location: 'Brooklyn, New York',
-                    date: '25 Dec,2021',
-                    time: '4:00 pm',
-                  ),
+                  // JobWidget(
+                  //   jobType: 'Recommended',
+                  //   userType: 'user',
+                  //   size: Size(
+                  //     1.sw,
+                  //     1.sh,
+                  //   ),
+                  //   title: 'BEDROOM SURPRISE',
+                  //   location: 'Brooklyn, New York',
+                  //   date: '25 Dec,2021',
+                  //   time: '4:00 pm',
+                  // ),
                 ],
               );
             },

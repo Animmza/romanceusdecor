@@ -8,11 +8,18 @@ class AssignmentServices {
       await _firebaseFirestore.collection('jobs').add(job.toJson());
       return true;
     } catch (e) {
+      print(e.toString());
       return false;
     }
   }
 
   Future<int> getJobId() async {
-    return await _firebaseFirestore.collection('jobs').snapshots().length + 1;
+    return (await (await _firebaseFirestore
+                    .collection('jobs')
+                    .snapshots()
+                    .first)
+                .docs)
+            .length +
+        1;
   }
 }

@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:romanceusdecor/pages/conversation_page.dart';
 import 'package:romanceusdecor/pages/create_job.dart';
 import 'package:romanceusdecor/pages/forgot_password.dart';
 import 'package:romanceusdecor/pages/home.dart';
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
         '/forgotpassword': (context) => ForgotPassword(),
         '/newpassword': (context) => NewPassword(),
         '/home': (context) => HomePage(),
-        '/conversationPage': (context) => ConversationPage(),
         '/createJob': (context) => CreateJob()
       },
       debugShowCheckedModeBanner: false,

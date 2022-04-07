@@ -26,7 +26,7 @@ class Job {
   late final String subtitle;
   late final String completionRemarks;
   late final int requiredLevel;
-  late final List<String> photosOfWork;
+  late final List photosOfWork;
 
   Job.fromJson(Map<String, dynamic> json) {
     jobId = json['jobId'];
@@ -41,7 +41,7 @@ class Job {
     subtitle = json['subtitle'];
     requiredLevel = json['requiredLevel'];
     completionRemarks = json['completionRemarks'];
-    photosOfWork = List.castFrom<String, String>(json['photosOfWork']);
+    photosOfWork = json['photosOfWork'];
   }
 
   Map<String, dynamic> toJson() {

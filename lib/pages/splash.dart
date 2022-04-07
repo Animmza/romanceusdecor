@@ -19,6 +19,7 @@ class _SplashState extends State<Splash> {
         Navigator.of(context).pushReplacementNamed('/loginpage');
       }
     });
+
     super.initState();
   }
 

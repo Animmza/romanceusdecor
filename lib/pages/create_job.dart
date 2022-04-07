@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:romanceusdecor/models/job.dart';
 import 'package:romanceusdecor/services/assignmentServices.dart';
+import 'package:intl/intl.dart';
 
 class CreateJob extends StatefulWidget {
   const CreateJob({Key? key}) : super(key: key);
@@ -14,6 +15,8 @@ class CreateJob extends StatefulWidget {
 
 class _CreateJobState extends State<CreateJob> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool loading = false;
+
   AssignmentServices _assignmentServices = AssignmentServices();
   TextEditingController _jobTitleController = TextEditingController();
   TextEditingController _subtitleController = TextEditingController();
@@ -21,6 +24,8 @@ class _CreateJobState extends State<CreateJob> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _cityController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+
   DateTime? _date;
   TimeOfDay? _timeOfDay;
   int? _skillLevel;
@@ -28,6 +33,7 @@ class _CreateJobState extends State<CreateJob> {
   bool timeRequired = false;
   @override
   Widget build(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Create New Job'),
@@ -268,12 +274,17 @@ class _CreateJobState extends State<CreateJob> {
                               height: .08.sh,
                               padding: EdgeInsets.all(10),
                               child: Text(
-                                'Pick a Date',
-                                style: TextStyle(color: Colors.grey),
+                                _date == null
+                                    ? 'Pick a Date'
+                                    : localizations.formatFullDate(_date!),
+                                style: _date == null
+                                    ? TextStyle(color: Colors.grey)
+                                    : TextStyle(color: Colors.black),
                               ),
                               decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.grey, width: .4),
+                                border: dateRequired
+                                    ? Border.all(color: Colors.red, width: 1)
+                                    : Border.all(color: Colors.grey, width: .4),
                               ),
                             ),
                           ),
@@ -281,18 +292,27 @@ class _CreateJobState extends State<CreateJob> {
                             onPressed: () {
                               showDatePicker(
                                 context: context,
-                                initialDate: DateTime.now(),
+                                initialDate: _date ?? DateTime.now(),
                                 firstDate: DateTime.now(),
                                 lastDate: DateTime.now().add(
                                   Duration(days: 300),
                                 ),
-                              ).then((value) {});
+                              ).then((value) {
+                                setState(() {
+                                  _date = value;
+                                  dateRequired = false;
+                                });
+                              });
                             },
                             icon: Icon(CupertinoIcons.calendar),
                             color: Theme.of(context).primaryColor,
                           )
                         ],
                       ),
+                      dateRequired
+                          ? Text('Field is required.',
+                              style: TextStyle(color: Colors.red, fontSize: 12))
+                          : SizedBox(),
                       SizedBox(
                         height: .02.sh,
                       ),
@@ -311,12 +331,16 @@ class _CreateJobState extends State<CreateJob> {
                               height: .08.sh,
                               padding: EdgeInsets.all(10),
                               child: Text(
-                                'Pick a Time',
+                                _timeOfDay == null
+                                    ? 'Pick a Time'
+                                    : localizations
+                                        .formatTimeOfDay(_timeOfDay!),
                                 style: TextStyle(color: Colors.grey),
                               ),
                               decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.grey, width: .4),
+                                border: timeRequired
+                                    ? Border.all(color: Colors.red, width: 1)
+                                    : Border.all(color: Colors.grey, width: .4),
                               ),
                             ),
                           ),
@@ -324,14 +348,23 @@ class _CreateJobState extends State<CreateJob> {
                             onPressed: () {
                               showTimePicker(
                                 context: context,
-                                initialTime: TimeOfDay.now(),
-                              );
+                                initialTime: _timeOfDay ?? TimeOfDay.now(),
+                              ).then((value) {
+                                setState(() {
+                                  _timeOfDay = value;
+                                  timeRequired = false;
+                                });
+                              });
                             },
                             icon: Icon(CupertinoIcons.clock),
                             color: Theme.of(context).primaryColor,
                           ),
                         ],
                       ),
+                      timeRequired
+                          ? Text("Field is Required.",
+                              style: TextStyle(color: Colors.red, fontSize: 12))
+                          : SizedBox(),
                       SizedBox(
                         height: .02.sh,
                       ),
@@ -353,6 +386,16 @@ class _CreateJobState extends State<CreateJob> {
                             borderRadius: BorderRadius.zero,
                             borderSide:
                                 BorderSide(color: Colors.red, width: .7),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: .7),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: .7),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.zero,
@@ -387,49 +430,81 @@ class _CreateJobState extends State<CreateJob> {
                       SizedBox(
                         height: .02.sh,
                       ),
-                      Container(
+                      Align(
                         alignment: Alignment.center,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            _formKey.currentState!.validate();
-                            // final Job newJob = Job(
-                            //   jobId: await _assignmentServices.getJobId(),
-                            //   jobStatus: 'Pending',
-                            //   jobDate: _date!.toIso8601String(),
-                            //   jobTime: _timeOfDay.toString(),
-                            //   customerPhoneNo: _phoneNumberController.text,
-                            //   jobAddress: _addressController.text,
-                            //   assignedTo: 'none',
-                            //   description: _descriptionController.text,
-                            //   title: _jobTitleController.text,
-                            //   subtitle: _subtitleController.text,
-                            //   completionRemarks: '',
-                            //   photosOfWork: [],
-                            //   requiredLevel: _skillLevel!,
-                            // );
+                        child: AnimatedContainer(
+                          curve: Curves.easeIn,
+                          duration: Duration(seconds: 2),
+                          height: .075.sh,
+                          width: .9.sw,
+                          // !loading ? .9.sw : .075.sh,
+                          child:
+                              //  !loading
+                              //     ? ElevatedButton(
+                              //         onPressed: () {},
+                              //         style: ElevatedButton.styleFrom(
+                              //             padding: EdgeInsets.all(10),
+                              //             shape: CircleBorder()),
+                              //         child: CircularProgressIndicator(
+                              //           color: Colors.white,
+                              //         ),
+                              //       )
+                              //     :
+                              ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder()),
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate() &&
+                                  validateDateandTime()) {
+                                setState(() {
+                                  loading = true;
+                                });
 
-                            // _assignmentServices
-                            //     .addJobToDb(newJob)
-                            //     .then((posted) {
-                            //   if (posted) {
-                            //     Fluttertoast.showToast(msg: "Posted New Job.");
-                            //     return Navigator.pop(context);
-                            //   } else {
-                            //     Fluttertoast.showToast(
-                            //         msg: "Unkown Error. Try Again.");
-                            //   }
-                            //TODO : add date and time validation
-                            // });
-                          },
-                          child: Text('Add Job'),
-                          style: ElevatedButton.styleFrom(
-                            textStyle: TextStyle(fontSize: 15.sp),
-                            fixedSize: Size(1.sw, .07.sh),
-                            elevation: 0,
-                            shape: BeveledRectangleBorder(),
+                                try {
+                                  int jobId =
+                                      await _assignmentServices.getJobId();
+
+                                  final Job job = Job(
+                                      jobId: jobId,
+                                      jobStatus: 'Pending',
+                                      jobDate: _date!.toIso8601String(),
+                                      jobTime: _timeOfDay!.toString(),
+                                      customerPhoneNo:
+                                          _phoneNumberController.text,
+                                      jobAddress: _addressController.text,
+                                      assignedTo: '',
+                                      description: _descriptionController.text,
+                                      title: _jobTitleController.text,
+                                      subtitle: _subtitleController.text,
+                                      completionRemarks: '',
+                                      photosOfWork: [''],
+                                      requiredLevel: _skillLevel!);
+
+                                  _assignmentServices
+                                      .addJobToDb(job)
+                                      .then((posted) {
+                                    if (posted) {
+                                      Navigator.pop(context);
+                                      Fluttertoast.showToast(
+                                          msg: 'Job Created Successfuly.');
+                                    } else {
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      Fluttertoast.showToast(
+                                          msg:
+                                              'Unknown Error. Please Try Again.');
+                                    }
+                                  });
+                                } catch (e) {
+                                  print(e.toString());
+                                }
+                              }
+                            },
+                            child: Text('Add Job'),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -439,5 +514,29 @@ class _CreateJobState extends State<CreateJob> {
         ),
       ),
     );
+  }
+
+  bool validateDateandTime() {
+    if (_date == null) {
+      setState(() {
+        dateRequired = true;
+      });
+      return false;
+    } else {
+      setState(() {
+        dateRequired = false;
+      });
+    }
+    if (_timeOfDay == null) {
+      setState(() {
+        timeRequired = true;
+      });
+      return false;
+    } else {
+      setState(() {
+        timeRequired = false;
+      });
+    }
+    return true;
   }
 }

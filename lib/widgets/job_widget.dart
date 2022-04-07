@@ -1,25 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:romanceusdecor/models/job.dart';
 import 'package:romanceusdecor/pages/assignment_details_page.dart';
 
 class JobWidget extends StatefulWidget {
+  final Job job;
   final Size size;
-  final String title;
-  final String location;
-  final String date;
-  final String time;
-  final String jobType;
   final String userType;
-  const JobWidget({
-    Key? key,
-    required this.size,
-    required this.title,
-    required this.location,
-    required this.date,
-    required this.time,
-    required this.jobType,
-    required this.userType,
-  }) : super(key: key);
+  const JobWidget(
+      {Key? key, required this.job, required this.size, required this.userType})
+      : super(key: key);
 
   @override
   _JobWidgetState createState() => _JobWidgetState();
@@ -50,7 +40,7 @@ class _JobWidgetState extends State<JobWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.title,
+                    widget.job.title,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).primaryColor),
@@ -58,7 +48,7 @@ class _JobWidgetState extends State<JobWidget> {
                   Container(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      widget.jobType,
+                      'Type',
                       style: TextStyle(
                           color: Theme.of(context).primaryColor, fontSize: 10),
                     ),
@@ -85,7 +75,7 @@ class _JobWidgetState extends State<JobWidget> {
                     width: 10,
                   ),
                   Text(
-                    widget.location,
+                    widget.job.jobAddress,
                     style: TextStyle(fontSize: 12),
                   )
                 ],
@@ -105,7 +95,7 @@ class _JobWidgetState extends State<JobWidget> {
                     width: 10,
                   ),
                   Text(
-                    widget.date,
+                    widget.job.jobDate,
                     style: TextStyle(fontSize: 12),
                   )
                 ],
@@ -125,7 +115,7 @@ class _JobWidgetState extends State<JobWidget> {
                     width: 10,
                   ),
                   Text(
-                    widget.time,
+                    widget.job.jobTime,
                     style: TextStyle(fontSize: 12),
                   )
                 ],
